@@ -17,10 +17,8 @@ class Grant(models.Model):
         return [c.strip() for c in self.country.split(',') if c.strip()]
 
     def get_facts_list(self):
-        """Returns a list of facts, split by bullet points."""
         if not self.facts:
             return []
-        # Split only by bullet points, keeping related information together
         return [fact.strip() for fact in self.facts.split('•') if fact.strip()]
 
     def __str__(self):
