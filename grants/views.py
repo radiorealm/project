@@ -1,12 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 
-from .forms import GrantSearchForm
 from .models import Grant
 from .search import search_grants
 
 def home(request):
-    form = GrantSearchForm()
-    return render(request, 'grants/home.html', {'form': form})
+    return render(request, 'grants/home.html')
 
 def results(request):
     if request.method == 'POST':

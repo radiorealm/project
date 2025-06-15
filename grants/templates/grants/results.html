@@ -18,6 +18,7 @@
             padding: 2rem;
             max-width: 1200px;
             margin: 0 auto;
+            padding-bottom: 5rem;
         }
 
         h1 {
@@ -43,6 +44,10 @@
             padding: 2rem;
             margin: 1.5rem 0;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
 
         .grant-box:hover {
@@ -52,58 +57,30 @@
 
         .grant-title {
             color: #2d3748;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             font-size: 1.5rem;
             font-weight: 600;
         }
 
-        .grant-info {
-            margin: 1rem 0;
-        }
-
-        .grant-info p {
-            margin: 0.75rem 0;
-        }
-
-        .grant-info strong {
+        .grant-preview {
             color: #4a5568;
-            font-weight: 500;
+            margin: 1rem 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
-        .tag-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin: 0.5rem 0 1rem;
+        .grantor {
+            color: #4a5568;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
         }
 
-        .tag {
-            background-color: #ebf8ff;
-            color: #2b6cb0;
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .country-tag {
-            background-color: #f0fff4;
-            color: #2f855a;
-        }
-
-        .grant-name {
-            text-decoration: none;
-            color: #2d3748;
-            transition: color 0.2s ease;
-        }
-
-        .grant-name:hover {
-            color: #4299e1;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-top: 2rem;
+        .back-button {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
             padding: 0.75rem 1.5rem;
             background-color: #4299e1;
             color: white;
@@ -111,9 +88,10 @@
             border-radius: 6px;
             font-weight: 500;
             transition: background-color 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .back-link:hover {
+        .back-button:hover {
             background-color: #3182ce;
         }
 
@@ -126,32 +104,15 @@
             color: #4a5568;
         }
 
-        .source-link {
+        .read-more {
             color: #4299e1;
-            text-decoration: none;
+            font-weight: 500;
+            margin-top: 1rem;
+            display: inline-block;
         }
 
-        .source-link:hover {
+        .read-more:hover {
             text-decoration: underline;
-        }
-
-        .facts-list {
-            list-style-type: none;
-            margin: 0.5rem 0 1rem;
-        }
-
-        .facts-list li {
-            position: relative;
-            padding-left: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .facts-list li:before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: #4299e1;
-            font-weight: bold;
         }
     </style>
 </head>
@@ -163,45 +124,24 @@
     {% if grants %}
         <div>
         {% for grant in grants %}
-            <div class="grant-box">
-                <h2 class="grant-title">
-                    {{ grant.name|striptags|escape }}
-                </h2>
-                <div class="grant-info">
-                    <p><strong>Grantor:</strong> {{ grant.grantor|striptags|escape }}</p>
-                    
-                    <p><strong>Countries:</strong></p>
-                    <div class="tag-list">
-                        {% for country in grant.get_countries_list %}
-                            <span class="tag country-tag">{{ country|striptags|escape }}</span>
-                        {% endfor %}
-                    </div>
-
-                    <p><strong>Facts:</strong></p>
-                    <ul class="facts-list">
-                        {% for fact in grant.get_facts_list %}
-                            <li>{{ fact|striptags|escape }}</li>
-                        {% endfor %}
-                    </ul>
-
-                    <p><strong>Deadline:</strong> {{ grant.deadline|default:"Not specified"|striptags|escape }}</p>
-                    <p><strong>Amount:</strong> {{ grant.amount|default:"Not specified"|striptags|escape }}</p>
-                    <p><strong>Source Site:</strong> 
-                        {% if grant.site %}
-                            <a href="{{ grant.site|striptags|escape }}" class="source-link" target="_blank">{{ grant.site|striptags|escape }}</a>
-                        {% else %}
-                            Not specified
-                        {% endif %}
-                    </p>
+            <a href="{% url 'detail' grant.id %}" class="grant-box">
+                <h2 class="grant-title">{{ grant.name|striptags|escape }}</h2>
+                <div class="grant-preview">
+                    {{ grant.text|striptags|truncatechars:300 }}
                 </div>
-            </div>
+                <div class="grantor">
+                    {{ grant.grantor|striptags|escape }}
+                </div>
+                <span class="read-more">Read more →</span>
+            </a>
         {% endfor %}
         </div>
     {% else %}
         <div class="no-results">
-            <p>No grants found for your query.</p>
+            <h2>No grants found</h2>
+            <p>Try adjusting your search terms or browse through all available grants.</p>
         </div>
     {% endif %}
-    <a href="{% url 'home' %}" class="back-link">Back to search</a>
+    <a href="{% url 'home' %}" class="back-button">← Back to Search</a>
 </body>
 </html>

@@ -16,12 +16,12 @@
             color: #2d3748;
             background-color: #f7fafc;
             padding: 2rem;
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
         h1 {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 600;
             color: #1a202c;
             margin-bottom: 1.5rem;
@@ -32,7 +32,14 @@
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             padding: 2rem;
-            margin-bottom: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .grant-title {
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 600;
         }
 
         .grant-info {
@@ -50,29 +57,9 @@
             min-width: 120px;
         }
 
-        .tag-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin: 0.5rem 0 1rem;
-        }
-
-        .tag {
-            background-color: #ebf8ff;
-            color: #2b6cb0;
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .country-tag {
-            background-color: #f0fff4;
-            color: #2f855a;
-        }
-
         .back-link {
             display: inline-block;
+            margin-top: 2rem;
             padding: 0.75rem 1.5rem;
             background-color: #4299e1;
             color: white;
@@ -86,48 +73,80 @@
             background-color: #3182ce;
         }
 
-        .description {
-            background-color: #f8fafc;
+        .source-link {
+            color: #4299e1;
+            text-decoration: none;
+        }
+
+        .source-link:hover {
+            text-decoration: underline;
+        }
+
+        .facts-list {
+            list-style-type: none;
+            margin: 0.5rem 0 1rem;
+        }
+
+        .facts-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .facts-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #4299e1;
+            font-weight: bold;
+        }
+
+        .grant-description {
+            margin: 2rem 0;
             padding: 1.5rem;
+            background-color: #f8fafc;
             border-radius: 8px;
-            margin: 1.5rem 0;
-            color: #4a5568;
+            border-left: 4px solid #4299e1;
         }
     </style>
 </head>
 <body>
+    <h1>Grant Details</h1>
     <div class="grant-container">
-        <h1>{{ grant.name|striptags|escape }}</h1>
+        <h2 class="grant-title">{{ grant.name|striptags|escape }}</h2>
         
+        <div class="grant-description">
+            {{ grant.text|safe }}
+        </div>
+
         <div class="grant-info">
             <p><strong>Grantor:</strong> {{ grant.grantor|striptags|escape }}</p>
             
             <p><strong>Countries:</strong></p>
-            <div class="tag-list">
+            <ul class="facts-list">
                 {% for country in grant.get_countries_list %}
-                    <span class="tag country-tag">{{ country|striptags|escape }}</span>
+                    <li>{{ country|striptags|escape }}</li>
                 {% endfor %}
-            </div>
+            </ul>
 
             <p><strong>Facts:</strong></p>
-            <div class="tag-list">
+            <ul class="facts-list">
                 {% for fact in grant.get_facts_list %}
-                    <span class="tag">{{ fact|striptags|escape }}</span>
+                    <li>{{ fact|striptags|escape }}</li>
                 {% endfor %}
-            </div>
+            </ul>
 
             <p><strong>Deadline:</strong> {{ grant.deadline|default:"Not specified"|striptags|escape }}</p>
             <p><strong>Amount:</strong> {{ grant.amount|default:"Not specified"|striptags|escape }}</p>
-            <p><strong>Source Site:</strong> {{ grant.site|striptags|escape }}</p>
-
-            {% if grant.text %}
-                <div class="description">
-                    <p><strong>Description:</strong></p>
-                    <p>{{ grant.text|striptags|escape }}</p>
-                </div>
-            {% endif %}
+            <p><strong>Source Site:</strong> 
+                {% if grant.site %}
+                    <a href="{{ grant.site|striptags|escape }}" class="source-link" target="_blank">{{ grant.site|striptags|escape }}</a>
+                {% else %}
+                    Not specified
+                {% endif %}
+            </p>
         </div>
     </div>
-    <a href="{% url 'home' %}" class="back-link">Back to search</a>
+    <a href="javascript:history.back()" class="back-link">← Back to Results</a>
 </body>
 </html> 
